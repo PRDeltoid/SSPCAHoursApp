@@ -33,7 +33,7 @@ areaObject.prototype.loadArea = function(datesArray) {
 };
 
 areaObject.prototype.checkIfOpen = function(todaysDate) {
-	if(this.checkDay(todaysDate) &&	this.checkTime(todaysDate) && !checkIfHoliday(todaysDate)) {
+	if((this.checkTime(todaysDate) && this.checkDay(todaysDate)) || checkIfHoliday(todaysDate)) {
 		alert('open');
 	} else {
 		alert('closed');
@@ -52,29 +52,26 @@ areaObject.prototype.checkDay = function(todaysDate) {
 	return isOpen;
 };
 
-areaObject.prototype.checkTime = function (todaysDate) {
+areaObject.prototype.checkTime = function(todaysDate) {
 	var isOpen = false;
-	var currentTime = todaysDate.toTimeString();
+	var currentTime = todaysDate.getHours();
 	var dayOfTheWeek = this.dates[todaysDate.getDay()];
 	var openTime = dayOfTheWeek.openTime;
 	var closeTime = dayOfTheWeek.closeTime;
 	
-	if(openTime < currentTime && currentTime < closeTime) {
+	if(openTime <= currentTime && currentTime <= closeTime) {
 		isOpen = true;
-	}
-	
-	console.log(currentTime);
-	
+	}	
 	return isOpen;
 };
 
 $(document).ready(function() {	
 	loadHolidayArray();
-	loadAdoptionsArray();
+	loadAdoptionsAndReceivingArray();
 	
 	var adoptionsCenter = new areaObject("adoptions");
 	adoptionsCenter.loadArea(adoptionsDays);
-	console.log(adoptionsCenter);
+
 	
 	var todaysDate = getTodaysDateFormatted();	
 	adoptionsCenter.checkIfOpen(todaysDate);
@@ -88,11 +85,13 @@ function checkIfHoliday(date) {
 	return isHoliday;
 }
 
-//Removes ms,seconds,minutes,and hours (sets to 0). Make comparison easier.
+
+//Removes ms,seconds,minutes,and hours (sets to 0) to make comparisons easier.
 function getTodaysDateFormatted() {
-	var formattedDate = new Date(currentYear,currentMonth,currentDate);
+	var formattedDate = new Date(currentYear,currentMonth,currentDate,currentHour,currentMinutes);
 	return formattedDate;	
 }
+
 
 function loadHolidayArray() {
 	holidays.push(new Date(currentYear, MONTH.february, 17)); 	//Pres. Day
@@ -105,14 +104,15 @@ function loadHolidayArray() {
 	holidays.push(new Date(currentYear, MONTH.december, 25));	//Christmas Day
 }
 
-function loadAdoptionsArray() {
-	adoptionsDays.push(new dayObject(DAY.sunday,true,11,6));
-	adoptionsDays.push(new dayObject(DAY.monday,false,11,6));
-	adoptionsDays.push(new dayObject(DAY.tuesday,false,11,6));
-	adoptionsDays.push(new dayObject(DAY.wednesday,true,11,6));
-	adoptionsDays.push(new dayObject(DAY.thursday,true,11,6));
-	adoptionsDays.push(new dayObject(DAY.friday,true,11,6));
-	adoptionsDays.push(new dayObject(DAY.saturday,true,11,6));
+function loadAdoptionsAndReceivingArray() {
+	//open/closed times use 24h clock (midnight is 0, 11PM is 23)
+	adoptionsDays.push(new dayObject(DAY.sunday,true,11,18));
+	adoptionsDays.push(new dayObject(DAY.monday,false,11,18));
+	adoptionsDays.push(new dayObject(DAY.tuesday,false,11,18));
+	adoptionsDays.push(new dayObject(DAY.wednesday,true,11,18));
+	adoptionsDays.push(new dayObject(DAY.thursday,true,11,18));
+	adoptionsDays.push(new dayObject(DAY.friday,true,11,18));
+	adoptionsDays.push(new dayObject(DAY.saturday,true,11,18));
 }
 
 
