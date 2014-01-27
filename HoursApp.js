@@ -15,14 +15,20 @@ var dayObject = function(day,open,openTime,closeTime) {
 	this.open = open;
 	this.openTime = openTime;
 	this.closeTime = closeTime;
+	
+
 };
 
 var holidays = [];
 var adoptionsDays = [];
+var receivingDays = [];
+var vaccineClinicDays = [];
+var petcoDays = [];
 
-var areaObject = function(areaName) {
+var areaObject = function(areaName,htmlID) {
 	this.areaName = areaName;
 	this.dates = [];
+	this.htmlID = htmlID;
 };
 
 areaObject.prototype.loadArea = function(datesArray) {
@@ -34,9 +40,9 @@ areaObject.prototype.loadArea = function(datesArray) {
 
 areaObject.prototype.checkIfOpen = function(todaysDate) {
 	if((this.checkTime(todaysDate) && this.checkDay(todaysDate)) || checkIfHoliday(todaysDate)) {
-		alert('open');
+		$("#"+this.htmlID).html(this.areaName + ":<span class='open'> Open</span>");
 	} else {
-		alert('closed');
+		$("#"+this.htmlID).html(this.areaName + ":<span class='closed'> Closed</span>");
 	}
 	return;	
 };
@@ -67,14 +73,24 @@ areaObject.prototype.checkTime = function(todaysDate) {
 
 $(document).ready(function() {	
 	loadHolidayArray();
-	loadAdoptionsAndReceivingArray();
+	loadAreaArrays();
 	
-	var adoptionsCenter = new areaObject("adoptions");
+	var adoptionsCenter = new areaObject("Adoptions",'adoptions');
 	adoptionsCenter.loadArea(adoptionsDays);
+	var petcoCenter = new areaObject("PetCo Adoptions Center",'petco');
+	petcoCenter.loadArea(petcoDays);
+	var receivingCenter = new areaObject("Receiving",'receiving');
+	receivingCenter.loadArea(receivingDays);
+	var vaccineClinic = new areaObject("Vaccine Clinic",'vaccine-clinic');
+	vaccineClinic.loadArea(vaccineClinicDays);
 
 	
 	var todaysDate = getTodaysDateFormatted();	
 	adoptionsCenter.checkIfOpen(todaysDate);
+	petcoCenter.checkIfOpen(todaysDate);
+	receivingCenter.checkIfOpen(todaysDate);
+	vaccineClinic.checkIfOpen(todaysDate);
+	
 });
 
 function checkIfHoliday(date) {
@@ -104,7 +120,7 @@ function loadHolidayArray() {
 	holidays.push(new Date(currentYear, MONTH.december, 25));	//Christmas Day
 }
 
-function loadAdoptionsAndReceivingArray() {
+function loadAreaArrays() {
 	//open/closed times use 24h clock (midnight is 0, 11PM is 23)
 	adoptionsDays.push(new dayObject(DAY.sunday,true,11,18));
 	adoptionsDays.push(new dayObject(DAY.monday,false,11,18));
@@ -113,6 +129,30 @@ function loadAdoptionsAndReceivingArray() {
 	adoptionsDays.push(new dayObject(DAY.thursday,true,11,18));
 	adoptionsDays.push(new dayObject(DAY.friday,true,11,18));
 	adoptionsDays.push(new dayObject(DAY.saturday,true,11,18));
+	
+	petcoDays.push(new dayObject(DAY.sunday,true,11,17));
+	petcoDays.push(new dayObject(DAY.monday,true,13,19));
+	petcoDays.push(new dayObject(DAY.tuesday,true,13,19));
+	petcoDays.push(new dayObject(DAY.wednesday,true,13,19));
+	petcoDays.push(new dayObject(DAY.thursday,true,13,19));
+	petcoDays.push(new dayObject(DAY.friday,true,13,19));
+	petcoDays.push(new dayObject(DAY.saturday,true,11,17));
+	
+	receivingDays.push(new dayObject(DAY.sunday,true,11,18));
+	receivingDays.push(new dayObject(DAY.monday,false,11,18));
+	receivingDays.push(new dayObject(DAY.tuesday,false,11,18));
+	receivingDays.push(new dayObject(DAY.wednesday,true,11,18));
+	receivingDays.push(new dayObject(DAY.thursday,true,11,18));
+	receivingDays.push(new dayObject(DAY.friday,true,11,18));
+	receivingDays.push(new dayObject(DAY.saturday,true,11,18));
+	
+	vaccineClinicDays.push(new dayObject(DAY.sunday,false,11,15));
+	vaccineClinicDays.push(new dayObject(DAY.monday,true,11,15));
+	vaccineClinicDays.push(new dayObject(DAY.tuesday,true,11,15));
+	vaccineClinicDays.push(new dayObject(DAY.wednesday,false,11,15));
+	vaccineClinicDays.push(new dayObject(DAY.thursday,false,11,15));
+	vaccineClinicDays.push(new dayObject(DAY.friday,false,11,15));
+	vaccineClinicDays.push(new dayObject(DAY.saturday,false,11,15));
 }
 
 

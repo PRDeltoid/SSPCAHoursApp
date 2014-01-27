@@ -1,0 +1,17 @@
+.openClosed {
+	padding:5px 4px;
+	border: 2px solid #000000;
+	margin:5px 10px;
+	font-family: Arial, Helvetica, sans-serif;
+	display:inline;
+}
+
+.open {
+	color:#00BD00;
+	font-weight:bold;
+}
+
+.closed {
+	color:#ff0000;
+	font-weight:bold;
+}
